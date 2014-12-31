@@ -28,10 +28,15 @@ main.on('click', 'select', function(e) {
     }]
   });
   menu.on('select', function(e) {
-    if (e.itemIndex == 0) {
-      sendCommand("Licht Couch Aus");
-    }
-    if (e.itemIndex == 1) {
+    console.log("item selected");
+    if (e.itemIndex >= 0 && e.itemIndex < 10) {
+      var subsplit = e.item.subtitle.split(" ");
+      var cmd = subsplit[0] + " " + 
+          e.item.title + " " + 
+          subsplit[1];
+      console.log(cmd);
+      sendCommand(cmd);
+    } else {
       sendCommand("Licht Couch An");
     }
   });

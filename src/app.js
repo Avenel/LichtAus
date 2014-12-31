@@ -24,6 +24,24 @@ main.on('click', 'select', function(e) {
       }, {
         title: 'Couch',
         subtitle: 'Licht An'
+      }, {
+        title: 'Ambilight',
+        subtitle: 'Licht Aus'
+      }, {
+        title: 'Ambilight',
+        subtitle: 'Licht An'
+      }, {
+        title: 'Stehlar',
+        subtitle: 'Licht Aus'
+      }, {
+        title: 'Stehlar',
+        subtitle: 'Licht An'
+      }, {
+        title: 'Stehlal',
+        subtitle: 'Licht Aus'
+      }, {
+        title: 'Stehlal',
+        subtitle: 'Licht An'
       }]
     }]
   });

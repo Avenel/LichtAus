@@ -5,24 +5,50 @@
  */
 var UI = require('ui');
 var Vector2 = require('vector2');
-var lights = ["Couch", "Ambilight", "Stehlar", "Stehlal"];
+var lights = [];
 var lightItems = new Array();
 
-for (var i=0; i<lights.length; i++) {
-  var itemAus = {
-    title: lights[i],
-    subtitle: "Licht Aus"
-  };
-  var itemAn = {
-    title: lights[i],
-    subtitle: "Licht An"
-  };
+// Get Sensors
+var connection = new WebSocket('ws://192.168.2.21:54322');
+connection.onopen = function () {
+  console.log("send request...")
+  connection.send('dict'); // Send the message 'Ping' to the server
+};
+
+
+connection.onmessage = function(evt) {
+  var parsedString = evt.data.replace(/\'/g, "\"");
+  var data = JSON.parse(parsedString);
+  console.log(data);
+
+  var name;
+  for (name in data) {
+    if (data.hasOwnProperty(name)) {
+      lights.push(name);
+    }
+  }
+
+  for (var i=0; i<lights.length; i++) {
+    var item;
+    console.log("light: " + lights[i] + ", " + data[lights[i]]);
+    if (data[lights[i]] == "1") {
+      item = {
+        title: lights[i],
+        subtitle: "Licht Aus"
+      };
+    }
+    if (data[lights[i]] == "0") {
+      item = {
+        title: lights[i],
+        subtitle: "Licht An"
+      };
+    }
+    lightItems.push(item);
+  }
+
+  console.log(lightItems);
+};
   
-  lightItems[lightItems.length] = itemAus;
-  lightItems[lightItems.length] = itemAn;
-}
-
-
 var main = new UI.Card({
   title: 'Licht Aus!',
   icon: 'images/menu_icon.png',

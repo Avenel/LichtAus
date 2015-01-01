@@ -5,6 +5,23 @@
  */
 var UI = require('ui');
 var Vector2 = require('vector2');
+var lights = ["Couch", "Ambilight", "Stehlar", "Stehlal"];
+var lightItems = new Array();
+
+for (var i=0; i<lights.length; i++) {
+  var itemAus = {
+    title: lights[i],
+    subtitle: "Licht Aus"
+  };
+  var itemAn = {
+    title: lights[i],
+    subtitle: "Licht An"
+  };
+  
+  lightItems[lightItems.length] = itemAus;
+  lightItems[lightItems.length] = itemAn;
+}
+
 
 var main = new UI.Card({
   title: 'Licht Aus!',
@@ -18,31 +35,7 @@ main.show();
 main.on('click', 'select', function(e) {
   var menu = new UI.Menu({
     sections: [{
-      items: [{
-        title: 'Couch',
-        subtitle: 'Licht Aus'
-      }, {
-        title: 'Couch',
-        subtitle: 'Licht An'
-      }, {
-        title: 'Ambilight',
-        subtitle: 'Licht Aus'
-      }, {
-        title: 'Ambilight',
-        subtitle: 'Licht An'
-      }, {
-        title: 'Stehlar',
-        subtitle: 'Licht Aus'
-      }, {
-        title: 'Stehlar',
-        subtitle: 'Licht An'
-      }, {
-        title: 'Stehlal',
-        subtitle: 'Licht Aus'
-      }, {
-        title: 'Stehlal',
-        subtitle: 'Licht An'
-      }]
+      items: lightItems
     }]
   });
   menu.on('select', function(e) {
@@ -62,18 +55,22 @@ main.on('click', 'select', function(e) {
 });
   
 var sendCommand = function(cmd) {
-  // Show splash
-  var splashCard = new UI.Card({
-    title: "Bitte warten",
-    body: "Sende Befehle..."
-  });
-  splashCard.show();
-  
-  // Download data
-  var URL = 'http://192.168.2.21';
+  // Send command
   var connection = new WebSocket('ws://192.168.2.21:54322');
-  connection.onopen = function () {
-    connection.send(cmd);
+  
+  connection.onmessage = function(evt) { 
+    // Show splash
+    console.log("msg received: " + evt.data);
+    var splashCard = new UI.Card({
+      title: "Antwort",
+      body: evt.data
+    });
+    splashCard.show();
+    connection.close();
   };
-  splashCard.hide();
+  
+  connection.onopen = function () {
+    connection.send(cmd)
+  };
+  
 };
